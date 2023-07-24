@@ -5,14 +5,14 @@ import logging
 from datetime import datetime
 
 # Set up logging
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 def get_ec2_resource():
     try:
         # If AWS_PROFILE environment variable is set, use it
         profile = os.environ['AWS_PROFILE']
-        session = boto3.Session(profile_name=profile)
+        session = boto3.Session(profile_name='softserve')
     except KeyError:
         # If not, default to the instance's IAM role
         session = boto3.Session()
@@ -67,7 +67,7 @@ def main():
             "unencrypted_snapshots_size": unencrypted_snapshots_size,
         }
 
-        metrics_json = json.dumps(metrics)
+        metrics_json = json.dumps(metrics, indent=4)
 
         # Write the metrics to a file
         timestamp = datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
@@ -90,5 +90,4 @@ def lambda_handler(event, context):
     main()
 
 if __name__ == "__main__":
-    print("Running locally...")
     main()
