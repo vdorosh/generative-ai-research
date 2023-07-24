@@ -1,0 +1,492 @@
+{
+    "af-south-1": {
+        "UnattachedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedSnapshots": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        }
+    },
+    "ap-east-1": {
+        "UnattachedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedSnapshots": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        }
+    },
+    "ap-northeast-1": {
+        "UnattachedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedSnapshots": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        }
+    },
+    "ap-northeast-2": {
+        "UnattachedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedSnapshots": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        }
+    },
+    "ap-northeast-3": {
+        "UnattachedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedSnapshots": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        }
+    },
+    "ap-south-1": {
+        "UnattachedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedSnapshots": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        }
+    },
+    "ap-south-2": {
+        "UnattachedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedSnapshots": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        }
+    },
+    "ap-southeast-1": {
+        "UnattachedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedSnapshots": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        }
+    },
+    "ap-southeast-2": {
+        "UnattachedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedSnapshots": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        }
+    },
+    "ap-southeast-3": {
+        "UnattachedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedSnapshots": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        }
+    },
+    "ap-southeast-4": {
+        "UnattachedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedSnapshots": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        }
+    },
+    "ca-central-1": {
+        "UnattachedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedSnapshots": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        }
+    },
+    "eu-central-1": {
+        "UnattachedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedSnapshots": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        }
+    },
+    "eu-central-2": {
+        "UnattachedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedSnapshots": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        }
+    },
+    "eu-north-1": {
+        "UnattachedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedSnapshots": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        }
+    },
+    "eu-south-1": {
+        "UnattachedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedSnapshots": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        }
+    },
+    "eu-south-2": {
+        "UnattachedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedSnapshots": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        }
+    },
+    "eu-west-1": {
+        "UnattachedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedSnapshots": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        }
+    },
+    "eu-west-2": {
+        "UnattachedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedSnapshots": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        }
+    },
+    "eu-west-3": {
+        "UnattachedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedSnapshots": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        }
+    },
+    "me-central-1": {
+        "UnattachedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedSnapshots": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        }
+    },
+    "me-south-1": {
+        "UnattachedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedSnapshots": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        }
+    },
+    "sa-east-1": {
+        "UnattachedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedSnapshots": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        }
+    },
+    "us-east-1": {
+        "UnattachedVolumes": {
+            "Count": 3,
+            "TotalSize": 30,
+            "Details": [
+                {
+                    "VolumeId": "vol-0cf29a24e66f5b2a8",
+                    "Size": 10
+                },
+                {
+                    "VolumeId": "vol-0e471f6631ad335c4",
+                    "Size": 10
+                },
+                {
+                    "VolumeId": "vol-0efc8088e5bc65eba",
+                    "Size": 10
+                }
+            ]
+        },
+        "UnencryptedVolumes": {
+            "Count": 2,
+            "TotalSize": 20,
+            "Details": [
+                {
+                    "VolumeId": "vol-0cf29a24e66f5b2a8",
+                    "Size": 10
+                },
+                {
+                    "VolumeId": "vol-0efc8088e5bc65eba",
+                    "Size": 10
+                }
+            ]
+        },
+        "UnencryptedSnapshots": {
+            "Count": 2,
+            "TotalSize": 20,
+            "Details": [
+                {
+                    "SnapshotId": "snap-041d42260c1d1ac1c",
+                    "Size": 10
+                },
+                {
+                    "SnapshotId": "snap-02101ce1c65d5fb50",
+                    "Size": 10
+                }
+            ]
+        }
+    },
+    "us-east-2": {
+        "UnattachedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedSnapshots": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        }
+    },
+    "us-west-1": {
+        "UnattachedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedSnapshots": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        }
+    },
+    "us-west-2": {
+        "UnattachedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedVolumes": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        },
+        "UnencryptedSnapshots": {
+            "Count": 0,
+            "TotalSize": 0,
+            "Details": []
+        }
+    }
+}

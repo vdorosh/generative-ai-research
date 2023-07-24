@@ -1,0 +1,48 @@
+{
+    "UnattachedVolumes": {
+        "Count": 3,
+        "TotalSize": 30,
+        "Details": [
+            {
+                "VolumeId": "vol-0cf29a24e66f5b2a8",
+                "Size": 10
+            },
+            {
+                "VolumeId": "vol-0e471f6631ad335c4",
+                "Size": 10
+            },
+            {
+                "VolumeId": "vol-0efc8088e5bc65eba",
+                "Size": 10
+            }
+        ]
+    },
+    "UnencryptedVolumes": {
+        "Count": 2,
+        "TotalSize": 20,
+        "Details": [
+            {
+                "VolumeId": "vol-0cf29a24e66f5b2a8",
+                "Size": 10
+            },
+            {
+                "VolumeId": "vol-0efc8088e5bc65eba",
+                "Size": 10
+            }
+        ]
+    },
+    "UnencryptedSnapshots": {
+        "Count": 2,
+        "TotalSize": 20,
+        "Details": [
+            {
+                "SnapshotId": "snap-041d42260c1d1ac1c",
+                "Size": 10
+            },
+            {
+                "SnapshotId": "snap-02101ce1c65d5fb50",
+                "Size": 10
+            }
+        ]
+    }
+}
