@@ -14,19 +14,21 @@ session = boto3.Session(region_name=os.getenv('AWS_REGION'))
 ec2 = session.client('ec2')
 s3 = session.client('s3')
 
+
 def lambda_handler(event, context):
+    """Main Lambda function handler."""
     try:
         bucket_name = os.environ['BUCKET_NAME']
-        bucket_path = os.environ['BUCKET_PATH']
+        bucket_path = os.getenv('BUCKET_PATH', '')
     except KeyError as e:
         raise Exception("Environment variable not set: " + str(e))
 
-    print(f"Collecting metrics from EC2 volumes and snapshots...")
+    print("Collecting metrics from EC2 volumes and snapshots...")
 
     metrics = {
-        "UnattachedVolumes": get_unattached_volumes(),
-        "UnencryptedVolumes": get_unencrypted_volumes(),
-        "UnencryptedSnapshots": get_unencrypted_snapshots()
+        "UnattachedVolumes": get_metrics(get_unattached_volumes()),
+        "UnencryptedVolumes": get_metrics(get_unencrypted_volumes()),
+        "UnencryptedSnapshots": get_metrics(get_unencrypted_snapshots())
     }
 
     timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
@@ -40,14 +42,16 @@ def lambda_handler(event, context):
         Key=file_name
     )
 
-    print(f"Metrics written successfully to S3.")
+    print("Metrics written successfully to S3.")
 
     return {
         'statusCode': 200,
         'body': json.dumps(metrics)
     }
 
+
 def get_unattached_volumes():
+    """Return a list of unattached volumes."""
     try:
         response = retry_on_failure(ec2.describe_volumes)
         return collect_metrics_from_volumes(response['Volumes'], 'available')
@@ -55,7 +59,9 @@ def get_unattached_volumes():
         print(f"Failed to get unattached volumes: {e}")
         return []
 
+
 def get_unencrypted_volumes():
+    """Return a list of unencrypted volumes."""
     try:
         response = retry_on_failure(ec2.describe_volumes)
         return collect_metrics_from_volumes(response['Volumes'], 'unencrypted')
@@ -63,7 +69,9 @@ def get_unencrypted_volumes():
         print(f"Failed to get unencrypted volumes: {e}")
         return []
 
+
 def get_unencrypted_snapshots():
+    """Return a list of unencrypted snapshots."""
     try:
         response = retry_on_failure(ec2.describe_snapshots, OwnerIds=['self'])
         return collect_metrics_from_snapshots(response['Snapshots'])
@@ -71,7 +79,9 @@ def get_unencrypted_snapshots():
         print(f"Failed to get unencrypted snapshots: {e}")
         return []
 
+
 def retry_on_failure(func, **kwargs):
+    """Retry the function in case of AWS RequestLimitExceeded error."""
     retries = 0
     while retries < MAX_RETRIES:
         try:
@@ -83,7 +93,9 @@ def retry_on_failure(func, **kwargs):
             else:
                 raise
 
+
 def collect_metrics_from_volumes(volumes, filter_type):
+    """Collect metrics from volumes based on the filter type."""
     metrics = []
     for volume in volumes:
         if (filter_type == 'available' and volume['State'] == 'available') or \
@@ -92,7 +104,9 @@ def collect_metrics_from_volumes(volumes, filter_type):
     print(f"Collected {len(metrics)} {filter_type} volumes.")
     return metrics
 
+
 def collect_metrics_from_snapshots(snapshots):
+    """Collect metrics from snapshots."""
     metrics = []
     for snapshot in snapshots:
         if not snapshot.get('KmsKeyId'):
@@ -100,9 +114,20 @@ def collect_metrics_from_snapshots(snapshots):
     print(f"Collected {len(metrics)} unencrypted snapshots.")
     return metrics
 
+
+def get_metrics(data):
+    """Get the metrics for the provided data."""
+    return {
+        "Count": len(data),
+        "TotalSize": sum([item['Size'] for item in data]),
+        "Details": data
+    }
+
+
 def main():
-    # Test the lambda function locally
+    """Test the lambda function locally."""
     print(lambda_handler({}, {}))
+
 
 if __name__ == "__main__":
     main()
