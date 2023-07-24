@@ -10,13 +10,8 @@ from time import sleep
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Retry settings
-MAX_RETRIES = 3
-BACKOFF_FACTOR = 2
-
-# AWS services clients
-session = boto3.Session(region_name=os.getenv('AWS_REGION'))
-ec2 = session.client('ec2')
+# AWS services client
+session = boto3.Session()
 s3 = session.client('s3')
 
 def lambda_handler(event, context):
@@ -31,10 +26,19 @@ def lambda_handler(event, context):
     logger.info("Collecting metrics from EC2 volumes and snapshots...")
 
     metrics = {
-        "UnattachedVolumes": get_metrics(get_unattached_volumes()),
-        "UnencryptedVolumes": get_metrics(get_unencrypted_volumes()),
-        "UnencryptedSnapshots": get_metrics(get_unencrypted_snapshots())
+        "UnattachedVolumes": [],
+        "UnencryptedVolumes": [],
+        "UnencryptedSnapshots": []
     }
+
+    # Iterate over each region
+    regions = session.get_available_regions('ec2')
+    for region in regions:
+        logger.info("Processing region: %s", region)
+        ec2 = session.client('ec2', region_name=region)
+        metrics["UnattachedVolumes"] += get_metrics(get_unattached_volumes(ec2))
+        metrics["UnencryptedVolumes"] += get_metrics(get_unencrypted_volumes(ec2))
+        metrics["UnencryptedSnapshots"] += get_metrics(get_unencrypted_snapshots(ec2))
 
     timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
     file_name = f"{bucket_path}/metrics-{timestamp}.json"
@@ -58,10 +62,10 @@ def lambda_handler(event, context):
         'body': json.dumps(metrics)
     }
 
-def get_unattached_volumes():
+def get_unattached_volumes(ec2):
     """Return a list of unattached volumes."""
     try:
-        return collect_metrics_from_volumes('available')
+        return collect_metrics_from_volumes(ec2, 'available')
     except ClientError as e:
         logger.error("Failed to get unattached volumes: %s", e)
         return []
@@ -69,10 +73,10 @@ def get_unattached_volumes():
         logger.error("AWS error: %s", e)
         raise e
 
-def get_unencrypted_volumes():
+def get_unencrypted_volumes(ec2):
     """Return a list of unencrypted volumes."""
     try:
-        return collect_metrics_from_volumes('unencrypted')
+        return collect_metrics_from_volumes(ec2, 'unencrypted')
     except ClientError as e:
         logger.error("Failed to get unencrypted volumes: %s", e)
         return []
@@ -80,10 +84,10 @@ def get_unencrypted_volumes():
         logger.error("AWS error: %s", e)
         raise e
 
-def get_unencrypted_snapshots():
+def get_unencrypted_snapshots(ec2):
     """Return a list of unencrypted snapshots."""
     try:
-        return collect_metrics_from_snapshots()
+        return collect_metrics_from_snapshots(ec2)
     except ClientError as e:
         logger.error("Failed to get unencrypted snapshots: %s", e)
         return []
@@ -91,7 +95,7 @@ def get_unencrypted_snapshots():
         logger.error("AWS error: %s", e)
         raise e
 
-def collect_metrics_from_volumes(filter_type):
+def collect_metrics_from_volumes(ec2, filter_type):
     """Collect metrics from volumes based on the filter type."""
     paginator = ec2.get_paginator('describe_volumes')
     metrics = []
@@ -105,7 +109,7 @@ def collect_metrics_from_volumes(filter_type):
     logger.info("Collected %d %s volumes.", len(metrics), filter_type)
     return metrics
 
-def collect_metrics_from_snapshots():
+def collect_metrics_from_snapshots(ec2):
     """Collect metrics from snapshots."""
     paginator = ec2.get_paginator('describe_snapshots')
     metrics = []
