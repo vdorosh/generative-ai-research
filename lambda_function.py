@@ -4,7 +4,6 @@ import boto3
 import logging
 from botocore.exceptions import ClientError, BotoCoreError, NoCredentialsError
 from datetime import datetime
-from time import sleep
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -30,7 +29,6 @@ def lambda_handler(event, context):
     # Iterate over each region
     regions = session.get_available_regions('ec2')
     for region in regions:
-        logger.info("Processing region: %s", region)
         try:
             ec2 = session.client('ec2', region_name=region)
             region_metrics = {
@@ -41,7 +39,9 @@ def lambda_handler(event, context):
             metrics[region] = region_metrics
         except ClientError as e:
             if "AuthFailure" in str(e):
+                # Skip regions with authentication failure and suppress the error message
                 logger.warning("Region %s is not enabled for your account. Skipping...", region)
+                continue
             else:
                 logger.error("Failed to process region %s: %s", region, e)
 
