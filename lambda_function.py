@@ -19,7 +19,6 @@ session = boto3.Session(region_name=os.getenv('AWS_REGION'))
 ec2 = session.client('ec2')
 s3 = session.client('s3')
 
-
 def lambda_handler(event, context):
     """Main Lambda function handler."""
     try:
@@ -59,12 +58,10 @@ def lambda_handler(event, context):
         'body': json.dumps(metrics)
     }
 
-
 def get_unattached_volumes():
     """Return a list of unattached volumes."""
     try:
-        response = retry_on_failure(ec2.describe_volumes)
-        return collect_metrics_from_volumes(response['Volumes'], 'available')
+        return collect_metrics_from_volumes('available')
     except ClientError as e:
         logger.error("Failed to get unattached volumes: %s", e)
         return []
@@ -72,12 +69,10 @@ def get_unattached_volumes():
         logger.error("AWS error: %s", e)
         raise e
 
-
 def get_unencrypted_volumes():
     """Return a list of unencrypted volumes."""
     try:
-        response = retry_on_failure(ec2.describe_volumes)
-        return collect_metrics_from_volumes(response['Volumes'], 'unencrypted')
+        return collect_metrics_from_volumes('unencrypted')
     except ClientError as e:
         logger.error("Failed to get unencrypted volumes: %s", e)
         return []
@@ -85,12 +80,10 @@ def get_unencrypted_volumes():
         logger.error("AWS error: %s", e)
         raise e
 
-
 def get_unencrypted_snapshots():
     """Return a list of unencrypted snapshots."""
     try:
-        response = retry_on_failure(ec2.describe_snapshots, OwnerIds=['self'])
-        return collect_metrics_from_snapshots(response['Snapshots'])
+        return collect_metrics_from_snapshots()
     except ClientError as e:
         logger.error("Failed to get unencrypted snapshots: %s", e)
         return []
@@ -98,41 +91,32 @@ def get_unencrypted_snapshots():
         logger.error("AWS error: %s", e)
         raise e
 
-
-def retry_on_failure(func, **kwargs):
-    """Retry the function in case of AWS RequestLimitExceeded error."""
-    retries = 0
-    while retries < MAX_RETRIES:
-        try:
-            return func(**kwargs)
-        except ClientError as e:
-            if e.response['Error']['Code'] == 'RequestLimitExceeded' and retries < MAX_RETRIES:
-                sleep(BACKOFF_FACTOR ** retries)
-                retries += 1
-            else:
-                raise
-
-
-def collect_metrics_from_volumes(volumes, filter_type):
+def collect_metrics_from_volumes(filter_type):
     """Collect metrics from volumes based on the filter type."""
+    paginator = ec2.get_paginator('describe_volumes')
     metrics = []
-    for volume in volumes:
-        if (filter_type == 'available' and volume['State'] == 'available') or \
-           (filter_type == 'unencrypted' and not volume.get('KmsKeyId')):
-            metrics.append({"VolumeId": volume['VolumeId'], "Size": volume['Size']})
+
+    for page in paginator.paginate():
+        for volume in page['Volumes']:
+            if (filter_type == 'available' and volume['State'] == 'available') or \
+            (filter_type == 'unencrypted' and not volume.get('KmsKeyId')):
+                metrics.append({"VolumeId": volume['VolumeId'], "Size": volume['Size']})
+
     logger.info("Collected %d %s volumes.", len(metrics), filter_type)
     return metrics
 
-
-def collect_metrics_from_snapshots(snapshots):
+def collect_metrics_from_snapshots():
     """Collect metrics from snapshots."""
+    paginator = ec2.get_paginator('describe_snapshots')
     metrics = []
-    for snapshot in snapshots:
-        if not snapshot.get('KmsKeyId'):
-            metrics.append({"SnapshotId": snapshot['SnapshotId'], "Size": snapshot['VolumeSize']})
+
+    for page in paginator.paginate(OwnerIds=['self']):
+        for snapshot in page['Snapshots']:
+            if not snapshot.get('KmsKeyId'):
+                metrics.append({"SnapshotId": snapshot['SnapshotId'], "Size": snapshot['VolumeSize']})
+
     logger.info("Collected %d unencrypted snapshots.", len(metrics))
     return metrics
-
 
 def get_metrics(data):
     """Get the metrics for the provided data."""
@@ -142,11 +126,9 @@ def get_metrics(data):
         "Details": data
     }
 
-
 def main():
     """Test the lambda function locally."""
     logger.info(lambda_handler({}, {}))
-
 
 if __name__ == "__main__":
     main()
