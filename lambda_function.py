@@ -25,20 +25,25 @@ def lambda_handler(event, context):
 
     logger.info("Collecting metrics from EC2 volumes and snapshots...")
 
-    metrics = {
-        "UnattachedVolumes": [],
-        "UnencryptedVolumes": [],
-        "UnencryptedSnapshots": []
-    }
+    metrics = {}
 
     # Iterate over each region
     regions = session.get_available_regions('ec2')
     for region in regions:
         logger.info("Processing region: %s", region)
-        ec2 = session.client('ec2', region_name=region)
-        metrics["UnattachedVolumes"] += get_metrics(get_unattached_volumes(ec2))
-        metrics["UnencryptedVolumes"] += get_metrics(get_unencrypted_volumes(ec2))
-        metrics["UnencryptedSnapshots"] += get_metrics(get_unencrypted_snapshots(ec2))
+        try:
+            ec2 = session.client('ec2', region_name=region)
+            region_metrics = {
+                "UnattachedVolumes": get_metrics(get_unattached_volumes(ec2)),
+                "UnencryptedVolumes": get_metrics(get_unencrypted_volumes(ec2)),
+                "UnencryptedSnapshots": get_metrics(get_unencrypted_snapshots(ec2))
+            }
+            metrics[region] = region_metrics
+        except ClientError as e:
+            if "AuthFailure" in str(e):
+                logger.warning("Region %s is not enabled for your account. Skipping...", region)
+            else:
+                logger.error("Failed to process region %s: %s", region, e)
 
     timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
     file_name = f"{bucket_path}/metrics-{timestamp}.json"
