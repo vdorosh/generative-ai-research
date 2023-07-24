@@ -1,9 +1,14 @@
 import os
 import json
 import boto3
-from botocore.exceptions import ClientError
+import logging
+from botocore.exceptions import ClientError, BotoCoreError, NoCredentialsError
 from datetime import datetime
 from time import sleep
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Retry settings
 MAX_RETRIES = 3
@@ -21,9 +26,10 @@ def lambda_handler(event, context):
         bucket_name = os.environ['BUCKET_NAME']
         bucket_path = os.getenv('BUCKET_PATH', '')
     except KeyError as e:
+        logger.error("Missing environment variable: %s", str(e))
         raise Exception("Environment variable not set: " + str(e))
 
-    print("Collecting metrics from EC2 volumes and snapshots...")
+    logger.info("Collecting metrics from EC2 volumes and snapshots...")
 
     metrics = {
         "UnattachedVolumes": get_metrics(get_unattached_volumes()),
@@ -34,15 +40,19 @@ def lambda_handler(event, context):
     timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
     file_name = f"{bucket_path}/metrics-{timestamp}.json"
 
-    print(f"Writing metrics to S3 bucket {bucket_name} at {file_name}...")
+    logger.info("Writing metrics to S3 bucket %s at %s...", bucket_name, file_name)
 
-    s3.put_object(
-        Body=json.dumps(metrics, indent=4),
-        Bucket=bucket_name,
-        Key=file_name
-    )
+    try:
+        s3.put_object(
+            Body=json.dumps(metrics, indent=4),
+            Bucket=bucket_name,
+            Key=file_name
+        )
+    except ClientError as e:
+        logger.error("Failed to write metrics to S3: %s", e)
+        raise e
 
-    print("Metrics written successfully to S3.")
+    logger.info("Metrics written successfully to S3.")
 
     return {
         'statusCode': 200,
@@ -56,8 +66,11 @@ def get_unattached_volumes():
         response = retry_on_failure(ec2.describe_volumes)
         return collect_metrics_from_volumes(response['Volumes'], 'available')
     except ClientError as e:
-        print(f"Failed to get unattached volumes: {e}")
+        logger.error("Failed to get unattached volumes: %s", e)
         return []
+    except (BotoCoreError, NoCredentialsError) as e:
+        logger.error("AWS error: %s", e)
+        raise e
 
 
 def get_unencrypted_volumes():
@@ -66,8 +79,11 @@ def get_unencrypted_volumes():
         response = retry_on_failure(ec2.describe_volumes)
         return collect_metrics_from_volumes(response['Volumes'], 'unencrypted')
     except ClientError as e:
-        print(f"Failed to get unencrypted volumes: {e}")
+        logger.error("Failed to get unencrypted volumes: %s", e)
         return []
+    except (BotoCoreError, NoCredentialsError) as e:
+        logger.error("AWS error: %s", e)
+        raise e
 
 
 def get_unencrypted_snapshots():
@@ -76,8 +92,11 @@ def get_unencrypted_snapshots():
         response = retry_on_failure(ec2.describe_snapshots, OwnerIds=['self'])
         return collect_metrics_from_snapshots(response['Snapshots'])
     except ClientError as e:
-        print(f"Failed to get unencrypted snapshots: {e}")
+        logger.error("Failed to get unencrypted snapshots: %s", e)
         return []
+    except (BotoCoreError, NoCredentialsError) as e:
+        logger.error("AWS error: %s", e)
+        raise e
 
 
 def retry_on_failure(func, **kwargs):
@@ -101,7 +120,7 @@ def collect_metrics_from_volumes(volumes, filter_type):
         if (filter_type == 'available' and volume['State'] == 'available') or \
            (filter_type == 'unencrypted' and not volume.get('KmsKeyId')):
             metrics.append({"VolumeId": volume['VolumeId'], "Size": volume['Size']})
-    print(f"Collected {len(metrics)} {filter_type} volumes.")
+    logger.info("Collected %d %s volumes.", len(metrics), filter_type)
     return metrics
 
 
@@ -111,7 +130,7 @@ def collect_metrics_from_snapshots(snapshots):
     for snapshot in snapshots:
         if not snapshot.get('KmsKeyId'):
             metrics.append({"SnapshotId": snapshot['SnapshotId'], "Size": snapshot['VolumeSize']})
-    print(f"Collected {len(metrics)} unencrypted snapshots.")
+    logger.info("Collected %d unencrypted snapshots.", len(metrics))
     return metrics
 
 
@@ -126,7 +145,7 @@ def get_metrics(data):
 
 def main():
     """Test the lambda function locally."""
-    print(lambda_handler({}, {}))
+    logger.info(lambda_handler({}, {}))
 
 
 if __name__ == "__main__":
